@@ -1,0 +1,35 @@
+.DS_Store
+
+# Local Python environments and generated files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# Dataset, derived features, and experiment outputs
+/dataset/
+/dataset_manifest*.csv
+/features/
+/results/
+/evaluation/
+/training/
+*.pth
+*.pt
+*.ckpt
+*.npy
+*.npz
+*.pkl
+*.pickle
+*.csv
+*.mp4
+*.wav
+*.log
+
+# Local secrets
+.env
+.env.*
+!.env.example
