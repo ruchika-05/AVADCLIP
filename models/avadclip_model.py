@@ -108,8 +108,8 @@ class AVadCLIPModel(nn.Module):
 
         prompt_output = self.audio_visual_prompt(
             fused_features,
-            segment_logits,
-            class_features,
+            segment_scores,
+            class_features
         )
         alignment_output = self.mil_align(
             fused_features,

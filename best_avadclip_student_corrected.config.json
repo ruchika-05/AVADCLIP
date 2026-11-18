@@ -1,0 +1,66 @@
+{
+  "model": "AVadCLIP visual-only student",
+  "manifest": "dataset_manifest_675_test134.csv",
+  "fold_index": null,
+  "teacher_checkpoint": "best_avadclip_teacher_corrected.pth",
+  "checkpoint": "best_avadclip_student_corrected.pth",
+  "epochs": 10,
+  "learning_rate": 1e-05,
+  "seed": 42,
+  "optimizer": "AdamW",
+  "scheduler": {
+    "type": "MultiStepLR",
+    "milestones": [
+      3,
+      6,
+      10
+    ],
+    "gamma": 0.1
+  },
+  "distillation_weight": 1e-08,
+  "positive_class_weight": 1.0,
+  "binary_training_loss": "binary cross entropy with the configured positive-class multiplier",
+  "prompt_regularization_weight": 0.0001,
+  "checkpoint_selection_metric": "validation binary loss + alignment loss; distillation loss excluded",
+  "distillation_weight_note": "The official XD-Violence student training script uses 1e-8; compare loss and gradient scales before changing it.",
+  "student_text_conditioning": "anomaly-logit-weighted visual context plus residual four-times-width QuickGELU text MLP",
+  "student_visual_transformer": {
+    "layers": 1,
+    "attention_window": 64
+  },
+  "prompt_regularization": "mean absolute cosine similarity between normal and anomalous conditioned class features",
+  "batch_size": 1,
+  "train_videos": 420,
+  "validation_videos": 121,
+  "device": "mps",
+  "visual_max_length": 768,
+  "similarity_graph": "learned shared linear projection followed by cosine similarity, threshold 0.7, softmax over rows",
+  "distance_graph": "exp(-absolute_temporal_distance / e)",
+  "distillation_objective": "mean((teacher - student)^2 / (1e-6 + 2 * exp(log_variance)) + log_variance)",
+  "alignment_logit_temperature": 0.07,
+  "preflight": {
+    "status": "passed",
+    "teacher_checkpoint_loaded_strictly": true,
+    "teacher_parameters_frozen": true,
+    "student_forward_input": "visual features only",
+    "teacher_student_feature_shape": [
+      1,
+      151,
+      512
+    ],
+    "audio_visual_temporal_lengths_match": true,
+    "distillation_weight": 1e-08,
+    "raw_distillation_loss": 12.187786102294922,
+    "weighted_distillation_loss": 1.2187786069262074e-07,
+    "student_gradient_norms": [
+      1.1517337838995445e-07,
+      6.351088899236856e-08
+    ],
+    "gradient_expectation": "finite and nonzero",
+    "optimizer_step_performed": false
+  },
+  "best_validation_loss": 1.4765088155188344,
+  "best_validation_epoch": 5,
+  "final_learning_rate": 1.0000000000000004e-08,
+  "training_completed": true
+}

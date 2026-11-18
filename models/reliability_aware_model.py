@@ -59,6 +59,9 @@ class ReliabilityAwareAVadCLIPModel(nn.Module):
         return self
 
     def forward(self, visual, audio, class_features=None):
+        audio_dtype = next(self.audio_temporal.parameters()).dtype
+        audio = audio.to(dtype=audio_dtype)
+
         visual_features = self.visual_temporal(visual)
         audio_reliability = self.reliability_estimator(audio)
         audio_features = self.audio_temporal(audio)

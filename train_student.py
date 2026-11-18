@@ -219,8 +219,7 @@ def main():
         args.distillation_weight * raw_preflight_loss
     )
     checked_parameters = [
-        student.feature_estimator.feature_enhancement
-        .bottlenecks[0].conv[0].weight,
+        student.feature_estimator.feature_enhancement.conv[0].weight,
         student.feature_estimator.uncertainty_head[0].weight,
     ]
     preflight_gradients = torch.autograd.grad(

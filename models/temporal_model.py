@@ -104,22 +104,47 @@ class VisualTemporalEncoder(nn.Module):
         self.output_projection = nn.Linear(feature_dim, feature_dim)
         self.activation = _QuickGELU()
 
+
     def _build_adjacencies(self, x):
         projected = torch.matmul(x, self.similarity_projection)
         normalized = F.normalize(projected, p=2, dim=-1)
-        similarities = torch.bmm(normalized, normalized.transpose(1, 2))
-        similarity_adjacency = F.softmax(
-            similarities.masked_fill(similarities <= 0.7, 0.0),
-            dim=1,
+
+        similarities = torch.bmm(
+            normalized,
+            normalized.transpose(1, 2)
         )
 
-        positions = torch.arange(x.shape[1], device=x.device, dtype=x.dtype)
-        distances = torch.abs(positions[:, None] - positions[None, :])
+        # Remove weak similarity connections.
+        similarity_adjacency = similarities.masked_fill(
+            similarities <= 0.7,
+            float("-inf")
+        )
+
+        # Normalize each row.
+        similarity_adjacency = F.softmax(
+            similarity_adjacency,
+            dim=-1
+        )
+
+        # Temporal distance graph.
+        positions = torch.arange(
+            x.shape[1],
+            device=x.device,
+            dtype=x.dtype
+        )
+
+        distances = torch.abs(
+            positions[:, None] - positions[None, :]
+        )
+
         distance_adjacency = torch.exp(-distances / math.e)
+
         distance_adjacency = distance_adjacency.unsqueeze(0).expand(
             x.shape[0], -1, -1
         )
+
         return similarity_adjacency, distance_adjacency
+
 
     def forward(self, x):
         if x.dim() == 2:

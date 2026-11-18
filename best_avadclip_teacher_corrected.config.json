@@ -1,0 +1,49 @@
+{
+  "model": "AVadCLIP audio-visual teacher",
+  "fusion_architecture": "joint",
+  "manifest": "dataset_manifest_675_test134.csv",
+  "fold_index": null,
+  "checkpoint": "best_avadclip_teacher_corrected.pth",
+  "epochs": 10,
+  "learning_rate": 1e-05,
+  "seed": 42,
+  "audio_dropout_probability": 0.0,
+  "audio_dropout": "randomly zero all audio features for selected training videos",
+  "audio_degradation_probability": 0.0,
+  "audio_degradation_scales": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "reliability_aware_audio": false,
+  "audio_norm_reference": null,
+  "optimizer": "Adam",
+  "batch_size": 1,
+  "train_videos": 420,
+  "validation_videos": 121,
+  "device": "mps",
+  "loss": "binary cross-entropy + MIL alignment loss",
+  "alignment_logit_temperature": 0.07,
+  "video_top_k": "min(int(sequence_length / 16 + 1), sequence_length)",
+  "visual_max_length": 768,
+  "visual_transformer_layers": 2,
+  "visual_attention_heads": 1,
+  "visual_attention_window": 4,
+  "similarity_graph": "learned shared linear projection followed by cosine similarity, threshold 0.7, softmax over rows",
+  "distance_graph": "exp(-absolute_temporal_distance / e)",
+  "audio_tcn": {
+    "levels": 3,
+    "kernel_size": 2,
+    "dilations": [
+      1,
+      2,
+      4
+    ],
+    "dropout": 0.1
+  },
+  "binary_anomaly_branch": "Linear(512, 2048), QuickGELU, Linear(2048, 512), residual addition, Linear(512, 1), Sigmoid",
+  "validation_checkpoint_selection": true,
+  "best_validation_loss": 0.8515631913838616
+}

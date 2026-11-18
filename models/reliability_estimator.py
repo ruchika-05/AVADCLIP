@@ -18,4 +18,6 @@ class AudioReliabilityEstimator(nn.Module):
                 "Audio features must have shape [T, D] or [B, T, D], "
                 f"got {tuple(audio.shape)}"
             )
+        estimator_dtype = self.network[0].weight.dtype
+        audio = audio.to(dtype=estimator_dtype)
         return self.network(audio).squeeze(-1)

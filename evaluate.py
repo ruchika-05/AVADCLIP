@@ -154,7 +154,10 @@ def main():
                 )
             label = int(batch["label"].item())
             for condition, condition_audio in conditions.items():
-                audio = condition_audio.to(device) * args.audio_scale
+                audio = condition_audio.to(
+                    device=device,
+                    dtype=next(model.audio_temporal.parameters()).dtype
+                ) * args.audio_scale
                 if args.model == "teacher":
                     output = model(visual, audio.unsqueeze(0))
                 else:
